@@ -5,11 +5,12 @@ var $ = require('gulp-load-plugins')();
 
 // set variable via $ gulp --type production
 var environment = $.util.env.type || 'development';
+var runApp = $.util.env.app || 'app';
 var isProduction = environment === 'production';
-var webpackConfig = require('./webpack.config.js').getConfig(environment);
+var webpackConfig = require('./webpack.config.js').getConfig(environment, runApp);
 
 var port = $.util.env.port || 1337;
-var app = 'app/';
+var app = runApp + '/';
 var dist = 'dist/';
 
 // https://github.com/ai/autoprefixer

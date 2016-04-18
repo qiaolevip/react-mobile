@@ -29,6 +29,12 @@ You can define a port with `$ gulp --port 3333`.
 $ npm start
 ```
 
+Running different app
+
+```
+$ gulp --app family
+```
+
 ## Build
 
 Builds a minified version of the application in the dist folder.

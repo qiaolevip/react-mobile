@@ -1,9 +1,9 @@
-module.exports.getConfig = function(type) {
+module.exports.getConfig = function(type, runApp) {
 
   var isDev = type === 'development';
 
   var config = {
-    entry: './app/scripts/main.js',
+    entry: `./${runApp}/scripts/main.js`,
     output: {
       path: __dirname,
       filename: 'main.js'
