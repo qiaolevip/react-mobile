@@ -41,6 +41,8 @@ Builds a minified version of the application in the dist folder.
 
 ```
 $ gulp build --type production
+
+$ gulp build --type production --app family
 ```
 
 ## Testing

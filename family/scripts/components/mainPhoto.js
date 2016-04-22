@@ -1,6 +1,6 @@
 import React from 'react';
 import PersonInfo from './personInfo';
-import util from '../../../util/spaUtil';
+import { ajax } from '../../../util/spaUtil';
 
 class MainPhoto extends React.Component {
 
@@ -10,18 +10,49 @@ class MainPhoto extends React.Component {
     this.state = {
       isShowInfo: false,
       photos: [],
-      person: null
+      person: null,
+      page: 0,
+      isLoadFinished: false
     }
   }
 
   componentDidMount() {
-    let url = '';
-    util.load(url, function(data) {
-      data = data.data;
-      this.setState({
-        photos: data
-      })
-    });
+    let url = '/api/data/tools?type=familyHome&&page=';
+    let loadList = () => {
+      let page = this.state.page;
+      ajax.load(url + page, function(data) {
+        if (data.status == 'success') {
+          this.setState({
+            photos: this.state.photos.concat(data.data),
+            page: page + 1,
+            isLoadFinished: page == data.pageCount - 1
+          });
+        } else {
+          this.setState({
+            isLoadFinished: true
+          });
+        }
+      }.bind(this), function() {
+        this.setState({
+          isLoadFinished: true
+        });
+      }.bind(this));
+    };
+
+    let handleScroll = () => {
+      let isLoadFinished = this.state.isLoadFinished;
+      if (isLoadFinished) {
+        window.removeEventListener('scroll', handleScroll);
+      } else {
+        let scrollTop = document.body.scrollTop;
+        let inHeight = window.innerHeight;
+        let offsetHeight = document.body.scrollHeight;
+        if (scrollTop + inHeight + 40 > offsetHeight) loadList();
+      }
+    };
+
+    loadList();
+    window.addEventListener('scroll', handleScroll);
   }
 
   showInfo(person, e) {
@@ -50,8 +81,8 @@ class MainPhoto extends React.Component {
                 state.photos.map((item, index) =>
                   <li key={index} style={{marginRight: `${index%3==2?0:2}%`}}>
                     <a onClick={this.showInfo.bind(this, item)}>
-                      <img src={item.photo} />
-                      <span>{item.name}</span>
+                      <img src={item.icon} />
+                      <span>{item.title}</span>
                     </a>
                   </li>
                 )

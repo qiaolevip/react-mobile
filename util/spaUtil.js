@@ -8,20 +8,20 @@ String.prototype.includes = function(str) {
   return this.indexOf(str) != -1;
 };
 
-var getParameterByName = function(name, url) {
+export var getParameterByName = function(name, url) {
   url = url || location.search;
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(url);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 };
 
-var urlParams = function(params) {
+export var urlParams = function(params) {
   return Object.keys(params).map(function(k) {
     return encodeURIComponent(k) + '=' + encodeURIComponent(params[k])
   }).join('&');
 };
 
-var ajax = {
+export var ajax = {
   type: {
     GET: 'GET',
     POST: 'POST'
@@ -93,15 +93,15 @@ var ajax = {
   }
 };
 
-var goUrl = function(url) {
+export var goUrl = function(url) {
   window.location.href = url;
 };
 
-var numberFormat = function(num) {
+export var numberFormat = function(num) {
   return (num + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 };
 
-var formatDate = function(date, fmt) {
+export var formatDate = function(date, fmt) {
   fmt = fmt == 'date' ? 'yyyy-MM-dd' : fmt == 'time' ? 'hh:mm:ss' : fmt;
   fmt = fmt || 'yyyy-MM-dd';
   date = date ? new Date(date) : new Date();
