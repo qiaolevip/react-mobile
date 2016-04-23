@@ -1,5 +1,6 @@
-module.exports.getConfig = function(type, runApp) {
+var webpack = require('webpack');
 
+module.exports.getConfig = function(type, runApp) {
   var isDev = type === 'development';
 
   var config = {
@@ -21,8 +22,20 @@ module.exports.getConfig = function(type, runApp) {
     }
   };
 
-  if(isDev){
+  if (isDev) {
     config.devtool = 'eval';
+  } else {
+    config.plugins = [
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoErrorsPlugin(),
+      new webpack.DefinePlugin({
+        'process.env': {
+          // This has effect on the react lib size
+          'NODE_ENV': JSON.stringify('production')
+        }
+      }),
+      new webpack.optimize.UglifyJsPlugin()
+    ];
   }
 
   return config;
