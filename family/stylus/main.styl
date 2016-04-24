@@ -2,11 +2,8 @@
 @import 'helper'
 
 /* variables */
-$lightgrey = #999
 $linkColor = #555
-$grey = #eee
 $black = #222
-$white = #f7f7f7
 
 html
 button
@@ -66,15 +63,19 @@ body
     color: #696969;
     background-image: -webkit-linear-gradient(rgba(14,14,14,0) 0, #dedede 100%);
 
-    .back
+    .grid-area
       position: absolute;
       top: 0;
       display: block;
       padding: 3px 16px;
 
-      span
-        &:after
-          content: '< 返回';
+    .simipic
+      font-size: 1.3em;
+      left: 50%;
+      transform: translate(-50%, 0);
+
+    .message
+      right 0
 
   .photo-list-container
     overflow: hidden;
@@ -84,7 +85,7 @@ body
     li
       float: left;
       position: relative;
-      width: 32%;
+      width: 49%;
       margin-bottom: 2%;
       overflow: hidden;
 
@@ -94,8 +95,7 @@ body
 
         img
           vertical-align: middle;
-          width: 100%;
-          height: 130px;
+          height: 180px;
 
         span
           position: absolute;
@@ -105,7 +105,8 @@ body
           color: #fff;
           line-height: 25px;
           text-indent: 10px;
-          font-size: 14px;
+          font-size: 18px;
+          letter-spacing: 0.2em;
           background-image: -webkit-linear-gradient(rgba(14,14,14, 0) 0, rgba(14,14,14, 1) 100%);
 
   .person-info-container
@@ -118,10 +119,28 @@ body
       padding: 10px 15px 0;
       box-shadow: 0 1px 3px rgba(34, 25, 25, .4);
 
+      &.full-screen
+        position absolute
+        left 0
+        top 68px
+        padding 0
+        z-index: 2;
+
+      img
+        width: 100%;
+
     .person-card
       margin: 0 15px;
       padding: 1em 0;
       border-bottom: 1px solid #dedede;
+
+      &.full-screen
+        position absolute
+        left 0
+        top 0
+        background: #fff;
+        width: 90%;
+        font-size: 1.4em;
 
       .title
         border-left: 2px solid #459df5;
@@ -130,6 +149,41 @@ body
         .lemma-title
           color: #252525;
           font-weight: 700;
+
+        .voice-play
+          float right
+
+          &.gray-text
+            color: #888;
+
+          .btn-icon
+            background: url(../images/voice_icon.png) no-repeat -30px center;
+            background-size: 45px;
+            width: 15px;
+            display: inline-block;
+            vertical-align: top;
+            height: 24px;
+            margin-right: 5px;
+
+            &.playing
+              animation-name: toAni;
+              animation-duration: 1s;
+              animation-timing-function: steps(3);
+              animation-delay: 0s;
+              animation-iteration-count: infinite;
+              animation-direction: normal;
+              animation-fill-mode: none;
+              animation-play-state: running
+
+              @keyframes toAni {
+                0% {
+                    background-position: 0 center
+                }
+
+                100% {
+                    background-position: -45px center
+                }
+              }
 
     .base-info
       margin: 1em;
@@ -147,3 +201,39 @@ body
           color: #666;
           word-break: break-all;
           word-wrap: break-word;
+
+  .similar-pic-container
+    overflow: hidden;
+    margin: .5em;
+    text-align center
+
+    .title
+      height: 37px;
+      line-height: 37px;
+      font-size: 18px;
+      border-bottom: 1px solid #e0e0e0;
+      border-top: 1px solid #e0e0e0;
+      margin-bottom: .8em;
+      text-align: left;
+      border-left: 2px solid #459df5;
+      padding-left: 8px;;
+
+    .pic-list
+      li
+        float: left;
+        position: relative;
+        margin-bottom: 2%;
+        overflow: hidden;
+        width: 100%;
+
+        img
+          width 100%
+
+        span
+          position: absolute;
+          width: 100%;
+          left: 0;
+          bottom: 0;
+          color: #fff;
+          line-height: 25px;
+          background-image: -webkit-linear-gradient(rgba(14,14,14,0) 0, #0e0e0e 100%);

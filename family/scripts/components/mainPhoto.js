@@ -1,42 +1,53 @@
 import React from 'react';
+import BaseComponent from './baseComponent';
 import PersonInfo from './personInfo';
+import { default as apiUrl } from '../util/constant';
 import { ajax } from '../../../util/spaUtil';
 
-class MainPhoto extends React.Component {
+class MainPhoto extends BaseComponent {
 
   constructor(props) {
     super(props);
+    this._bind('showInfo', 'hideInfo');
 
     this.state = {
       isShowInfo: false,
       photos: [],
       person: null,
       page: 0,
+      isLoading: false,
       isLoadFinished: false
     }
   }
 
   componentDidMount() {
-    let url = '/api/data/tools?type=familyHome&&page=';
+    let url = apiUrl.photoList;
     let loadList = () => {
       let page = this.state.page;
-      ajax.load(url + page, function(data) {
-        if (data.status == 'success') {
-          this.setState({
-            photos: this.state.photos.concat(data.data),
-            page: page + 1,
-            isLoadFinished: page == data.pageCount - 1
-          });
-        } else {
+      if (!this.state.isLoading) {
+        this.setState({
+          isLoading: true
+        });
+        ajax.load(url + page, function(data) {
+          if (data.status == 'success') {
+            this.setState({
+              photos: this.state.photos.concat(data.data),
+              page: page + 1,
+              isLoadFinished: page == data.pageCount - 1,
+              isLoading: false
+            });
+          } else {
+            this.setState({
+              isLoadFinished: true,
+              isLoading: false
+            });
+          }
+        }.bind(this), function() {
           this.setState({
             isLoadFinished: true
           });
-        }
-      }.bind(this), function() {
-        this.setState({
-          isLoadFinished: true
-        });
-      }.bind(this));
+        }.bind(this));
+      }
     };
 
     let handleScroll = () => {
@@ -75,13 +86,13 @@ class MainPhoto extends React.Component {
     return (
       <div>
         {
-          state.isShowInfo ? <PersonInfo person={state.person} hideInfo={this.hideInfo.bind(this)} /> :
+          state.isShowInfo ? <PersonInfo person={state.person} hideInfo={this.hideInfo} /> :
             <ul className="photo-list-container">
               {
                 state.photos.map((item, index) =>
-                  <li key={index} style={{marginRight: `${index%3==2?0:2}%`}}>
-                    <a onClick={this.showInfo.bind(this, item)}>
-                      <img src={item.icon} />
+                  <li key={index} style={{marginRight: `${index%2==0?2:0}%`}}>
+                    <a onClick={e => this.showInfo(item, e)}>
+                      <img src={this._resizeImg(item.icon)} />
                       <span>{item.title}</span>
                     </a>
                   </li>
