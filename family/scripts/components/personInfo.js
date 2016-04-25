@@ -44,8 +44,16 @@ class PersonInfo extends BaseComponent {
     const info = state.person;
     const etcInfo = info.desc;
     const birthday = etcInfo.birthday;
-    let isFullScreen = state.isFullScreen;
-    let isPlaying = state.isPlaying;
+    const isFullScreen = state.isFullScreen;
+    const isPlaying = state.isPlaying;
+    let ages;
+    let animal;
+    let horoscope;
+    if (birthday) {
+      ages = getAgeFromBirth(birthday);
+      animal = getChineseZodiac(birthday);
+      horoscope = getConstellation(birthday);
+    }
 
     return (
       <div className="person-info-container">
@@ -59,7 +67,7 @@ class PersonInfo extends BaseComponent {
         <div className={'person-card' + (isFullScreen ? ' full-screen' : '')}>
           <div className="title">
             <span className="lemma-title">{info.title}</span>
-            <span className={'voice-play' + (isPlaying ? ' gray-text' : '') + (isFullScreen ? ' hidden' : '')} onClick={this.playAudio.bind(this, `${info.title}${birthday?'出生在'+birthday+'，今年'+getAgeFromBirth(birthday)+'岁':''}`)}>
+            <span className={'voice-play' + (isPlaying ? ' gray-text' : '') + (isFullScreen ? ' hidden' : '')} onClick={this.playAudio.bind(this, `${info.title}${birthday?`出生在${birthday}，今年${ages}岁，星座是${horoscope.cn}，他是属${animal.cn}的哦`:''}`)}>
               <span className={'btn-icon' + (isPlaying ? ' playing' : '')}></span>语音播报
             </span>
           </div>
@@ -88,21 +96,21 @@ class PersonInfo extends BaseComponent {
               birthday ?
                 <li>
                   <div className="info-title">年龄</div>
-                  <div className="info-content">{getAgeFromBirth(birthday)}岁</div>
+                  <div className="info-content">{ages}岁</div>
                 </li> : ''
             }
             {
               birthday ?
                 <li>
                   <div className="info-title">生肖</div>
-                  <div className="info-content">{getChineseZodiac(birthday).symbol+getChineseZodiac(birthday).cn}({getChineseZodiac(birthday).en})</div>
+                  <div className="info-content">{animal.symbol+animal.cn}({animal.en})</div>
                 </li> : ''
             }
             {
               birthday ?
                 <li>
                   <div className="info-title">星座</div>
-                  <div className="info-content">{getConstellation(birthday).symbol+getConstellation(birthday).cn}({getConstellation(birthday).en})</div>
+                  <div className="info-content">{horoscope.symbol+horoscope.cn}({horoscope.en})</div>
                 </li> : ''
             }
           </ul>
@@ -114,7 +122,7 @@ class PersonInfo extends BaseComponent {
           </div>
           <div className="grid-area simipic">
             <a onClick={e => this.switchImg(e)}>
-              <span>{isFullScreen?'还原 >':'🔍🖼'}</span>
+              <span>{isFullScreen?'还原 >':'🔍图'}</span>
             </a>
           </div>
           <div className="grid-area message">

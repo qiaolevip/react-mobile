@@ -1,6 +1,7 @@
 import React from 'react';
 import BaseComponent from './baseComponent';
 import PersonInfo from './personInfo';
+import ScrollTop from './scrollTop';
 import { default as apiUrl } from '../util/constant';
 import { ajax } from '../../../util/spaUtil';
 
@@ -85,6 +86,7 @@ class MainPhoto extends BaseComponent {
 
     return (
       <div>
+        <ScrollTop />
         {
           state.isShowInfo ? <PersonInfo person={state.person} hideInfo={this.hideInfo} /> :
             <ul className="photo-list-container">

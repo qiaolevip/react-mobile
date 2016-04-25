@@ -2,6 +2,7 @@ var path = require('path');
 var del = require('del');
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var rev = require('gulp-rev');
 
 // set variable via $ gulp --type production
 var environment = $.util.env.type || 'development';
@@ -30,6 +31,7 @@ gulp.task('scripts', function() {
   return gulp.src(webpackConfig.entry)
     .pipe($.webpack(webpackConfig))
     .pipe(isProduction ? $.uglify() : $.util.noop())
+    .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
     .pipe($.size({ title : 'js' }))
     .pipe($.connect.reload());
@@ -43,8 +45,7 @@ gulp.task('html', function() {
     .pipe($.connect.reload());
 });
 
-gulp.task('styles',function(cb) {
-
+gulp.task('styles',function() {
   // convert stylus to css
   return gulp.src(app + 'stylus/main.styl')
     .pipe($.stylus({
@@ -53,11 +54,11 @@ gulp.task('styles',function(cb) {
       // include 'normal' css into main.css
       'include css' : true
     }))
-    .pipe($.autoprefixer({browsers: autoprefixerBrowsers})) 
+    .pipe($.autoprefixer({browsers: autoprefixerBrowsers}))
+    .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'css/'))
     .pipe($.size({ title : 'css' }))
     .pipe($.connect.reload());
-
 });
 
 // add livereload on the given port
@@ -72,8 +73,8 @@ gulp.task('serve', function() {
 });
 
 // copy images
-gulp.task('images', function(cb) {
-  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif}')
+gulp.task('images', function() {
+  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif,svg}')
     .pipe($.size({ title : 'images' }))
     .pipe(gulp.dest(dist + 'images/'));
 });
@@ -96,6 +97,6 @@ gulp.task('clean', function(cb) {
 gulp.task('default', ['images', 'html','scripts', 'styles', 'serve', 'watch']);
 
 // waits until clean is finished then builds the project
-gulp.task('build', ['clean'], function(){
+gulp.task('build', ['clean'], function() {
   gulp.start(['images', 'html','scripts','styles']);
 });

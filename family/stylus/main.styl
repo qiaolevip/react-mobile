@@ -77,6 +77,24 @@ body
     .message
       right 0
 
+  .back-to-top
+    position: fixed;
+    bottom: 30px;
+    z-index: 7;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    background: rgba(102,102,102,0.64);
+    text-align: center;
+    line-height: 40px;
+    border-radius: 100px;
+    border: 1px solid #dadada;
+    color: #fff;
+    font-size: 1.5em;
+
+    &:before
+      content: '🔝'
+
   .photo-list-container
     overflow: hidden;
     margin: 0 .5em;

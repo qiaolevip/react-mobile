@@ -9,6 +9,22 @@ class BaseComponent extends React.Component {
     type = type || 'thumb180';
     return /sinaimg\.cn/.test(img) ? img.replace(img.split('/')[3], type) : img;
   }
+
+  _scrollTo(height) {
+    let interval = setInterval(function() {
+      const scrollTop = document.body.scrollTop;
+      document.body.scrollTop = scrollTop + (height / 100);
+      if (scrollTop >= height) clearInterval(interval);
+    }, 5);
+  }
+
+  _scrollToTop() {
+    let interval = setInterval(function() {
+      const scrollTop = document.body.scrollTop;
+      document.body.scrollTop = scrollTop / 1.5;
+      if (scrollTop < 1) clearInterval(interval);
+    }, 5);
+  }
 }
 
 export default BaseComponent;

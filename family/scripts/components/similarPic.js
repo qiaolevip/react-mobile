@@ -1,6 +1,5 @@
 import React from 'react';
 import BaseComponent from './baseComponent';
-import PersonInfo from './personInfo';
 import { default as apiUrl } from '../util/constant';
 import { ajax } from '../../../util/spaUtil';
 
@@ -12,7 +11,7 @@ class SimilarPic extends BaseComponent {
 
     this.state = {
       photos: [],
-      page: 0,
+      page: 1,
       isLoading: false,
       isLoadFinished: false
     }
@@ -32,6 +31,10 @@ class SimilarPic extends BaseComponent {
             page: page + 1,
             isLoading: false
           });
+          if (page == 1) {
+            const offsetTop = document.getElementsByClassName('similar-pic-container')[0].offsetTop;
+            this._scrollTo(offsetTop);
+          }
         } else {
           this.setState({
             isLoadFinished: true,
