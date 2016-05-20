@@ -1,21 +1,21 @@
-var path = require('path');
-var del = require('del');
-var gulp = require('gulp');
-var $ = require('gulp-load-plugins')();
-var rev = require('gulp-rev');
+const path = require('path');
+const del = require('del');
+const gulp = require('gulp');
+const $ = require('gulp-load-plugins')();
+const rev = require('gulp-rev');
 
-// set variable via $ gulp --type production
-var environment = $.util.env.type || 'development';
-var runApp = $.util.env.app || 'app';
-var isProduction = environment === 'production';
-var webpackConfig = require('./webpack.config.js').getConfig(environment, runApp);
+// set constiable via $ gulp --type production
+const environment = $.util.env.type || 'development';
+const runApp = $.util.env.app || 'app';
+const isProduction = environment === 'production';
+const webpackConfig = require('./webpack.config.js').getConfig(isProduction, runApp);
 
-var port = $.util.env.port || 1337;
-var app = runApp + '/';
-var dist = 'dist/';
+const port = $.util.env.port || 1337;
+const app = runApp + '/';
+const dist = 'dist/';
 
 // https://github.com/ai/autoprefixer
-var autoprefixerBrowsers = [                 
+const autoprefixerBrowsers = [
   'ie >= 9',
   'ie_mob >= 10',
   'ff >= 30',
@@ -27,21 +27,23 @@ var autoprefixerBrowsers = [
   'bb >= 10'
 ];
 
+// copy html from app to dist
+gulp.task('html', function() {
+  return gulp.src(app + 'index.html')
+    .pipe(gulp.dest(dist))
+    .pipe($.size({ title : 'html' }))
+    .pipe($.connect.reload());
+});
+
 gulp.task('scripts', function() {
   return gulp.src(webpackConfig.entry)
     .pipe($.webpack(webpackConfig))
     .pipe(isProduction ? $.uglify() : $.util.noop())
     .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
+    .pipe(isProduction ? rev.manifest() : $.util.noop())
+    .pipe(gulp.dest(dist + 'assets'))
     .pipe($.size({ title : 'js' }))
-    .pipe($.connect.reload());
-});
-
-// copy html from app to dist
-gulp.task('html', function() {
-  return gulp.src(app + 'index.html')
-    .pipe(gulp.dest(dist))
-    .pipe($.size({ title : 'html' }))
     .pipe($.connect.reload());
 });
 
@@ -57,8 +59,17 @@ gulp.task('styles',function() {
     .pipe($.autoprefixer({browsers: autoprefixerBrowsers}))
     .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'css/'))
+    .pipe(isProduction ? rev.manifest() : $.util.noop())
+    .pipe(gulp.dest(dist + 'assets'))
     .pipe($.size({ title : 'css' }))
     .pipe($.connect.reload());
+});
+
+// copy images
+gulp.task('images', function() {
+  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif,svg}')
+    .pipe($.size({ title : 'images' }))
+    .pipe(gulp.dest(dist + 'images/'));
 });
 
 // add livereload on the given port
@@ -70,13 +81,6 @@ gulp.task('serve', function() {
       port: 35729
     }
   });
-});
-
-// copy images
-gulp.task('images', function() {
-  return gulp.src(app + 'images/**/*.{png,jpg,jpeg,gif,svg}')
-    .pipe($.size({ title : 'images' }))
-    .pipe(gulp.dest(dist + 'images/'));
 });
 
 // watch styl, html and js file changes
@@ -94,9 +98,9 @@ gulp.task('clean', function(cb) {
 
 
 // by default build project and then watch files in order to trigger livereload
-gulp.task('default', ['images', 'html','scripts', 'styles', 'serve', 'watch']);
+gulp.task('default', ['html', 'scripts', 'styles', 'images', 'serve', 'watch']);
 
 // waits until clean is finished then builds the project
 gulp.task('build', ['clean'], function() {
-  gulp.start(['images', 'html','scripts','styles']);
+  gulp.start(['html', 'scripts', 'styles', 'images']);
 });

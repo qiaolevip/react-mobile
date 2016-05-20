@@ -1,15 +1,13 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
 
-module.exports.getConfig = function(type, runApp) {
-  var isDev = type === 'development';
-
-  var config = {
+module.exports.getConfig = function(isProduction, runApp) {
+  const config = {
     entry: `./${runApp}/scripts/main.js`,
     output: {
       path: __dirname,
       filename: 'main.js'
     },
-    debug : isDev,
+    debug : !isProduction,
     module: {
       loaders: [{
         test: /\.jsx?$/,
@@ -22,9 +20,7 @@ module.exports.getConfig = function(type, runApp) {
     }
   };
 
-  if (isDev) {
-    config.devtool = 'eval';
-  } else {
+  if (isProduction) {
     config.plugins = [
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoErrorsPlugin(),
@@ -34,8 +30,13 @@ module.exports.getConfig = function(type, runApp) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
-      new webpack.optimize.UglifyJsPlugin()
+      new webpack.optimize.UglifyJsPlugin({
+        compress: { warnings: false },
+        output: { comments: false }
+      })
     ];
+  } else {
+    config.devtool = 'eval';
   }
 
   return config;
