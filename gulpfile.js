@@ -3,6 +3,7 @@ const del = require('del');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
 const rev = require('gulp-rev');
+const gulpSequence = require('gulp-sequence');
 const revCollector = require('gulp-rev-collector');
 const minifyHtml = require('gulp-minify-html');
 
@@ -37,7 +38,7 @@ gulp.task('scripts', function() {
     .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
     .pipe(isProduction ? rev.manifest() : $.util.noop())
-    .pipe(isProduction ? gulp.dest(assets + 'js') : $.util.noop())
+    .pipe(isProduction ? gulp.dest(assets) : $.util.noop())
     .pipe($.size({ title : 'js' }))
     .pipe($.connect.reload());
 });
@@ -54,8 +55,8 @@ gulp.task('styles',function() {
     .pipe($.autoprefixer({browsers: autoprefixerBrowsers}))
     .pipe(isProduction ? rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'css/'))
-    .pipe(isProduction ? rev.manifest() : $.util.noop())
-    .pipe(isProduction ? gulp.dest(assets + 'css') : $.util.noop())
+    .pipe(isProduction ? rev.manifest(assets + 'rev-manifest.json', { merge: true, base: assets }) : $.util.noop())
+    .pipe(isProduction ? gulp.dest(assets) : $.util.noop())
     .pipe($.size({ title : 'css' }))
     .pipe($.connect.reload());
 });
@@ -70,13 +71,7 @@ gulp.task('images', function() {
 // copy html from app to dist
 gulp.task('html', function() {
   return gulp.src([assets + '**/*.json', app + 'index.html'])
-    .pipe(isProduction ? revCollector({
-      replaceReved: true,
-      dirReplacements: {
-        'css': 'css',
-        'js': 'js'
-      }
-    }) : $.util.noop())
+    .pipe(isProduction ? revCollector() : $.util.noop())
     .pipe(isProduction ? minifyHtml({
       empty: true,
       spare: true,
@@ -112,9 +107,7 @@ gulp.task('clean', function(cb) {
 });
 
 // by default build project and then watch files in order to trigger livereload
-gulp.task('default', ['scripts', 'styles', 'images', 'html', 'serve', 'watch']);
+gulp.task('default', gulpSequence('scripts', 'styles', 'images', 'html', 'serve', 'watch'));
 
 // waits until clean is finished then builds the project
-gulp.task('build', ['clean'], function() {
-  gulp.start(['scripts', 'styles', 'images', 'html']);
-});
+gulp.task('build', gulpSequence('clean', 'scripts', 'styles', 'images', 'html'));

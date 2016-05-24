@@ -19,7 +19,9 @@
   "main": "index.html",
   "scripts": {
     "start": "gulp clean && gulp",
-    "test": "jest"
+    "test": "jest",
+    "app": "gulp clean && gulp --type production",
+    "family": "gulp clean && gulp --app family --type production"
   },
   "author": "@HappyJoe <qiaole@vip.qq.com> (http://each.sinaapp.com | http://qiaole.sinaapp.com)",
   "license": "MIT",
@@ -38,6 +40,7 @@
     "gulp-minify-html": "^1.0.6",
     "gulp-rev": "^7.0.0",
     "gulp-rev-collector": "^1.0.3",
+    "gulp-sequence": "^0.4.5",
     "gulp-size": "^2.1.0",
     "gulp-stylus": "^2.3.1",
     "gulp-uglify": "^1.5.3",
