@@ -2,10 +2,6 @@ const path = require('path');
 const del = require('del');
 const gulp = require('gulp');
 const $ = require('gulp-load-plugins')();
-const rev = require('gulp-rev');
-const gulpSequence = require('gulp-sequence');
-const revCollector = require('gulp-rev-collector');
-const minifyHtml = require('gulp-minify-html');
 
 // set constiable via $ gulp --type production
 const environment = $.util.env.type || 'development';
@@ -35,9 +31,9 @@ gulp.task('scripts', function() {
   return gulp.src(webpackConfig.entry)
     .pipe($.webpack(webpackConfig))
     .pipe(isProduction ? $.uglify() : $.util.noop())
-    .pipe(isProduction ? rev() : $.util.noop())
+    .pipe(isProduction ? $.rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'js/'))
-    .pipe(isProduction ? rev.manifest() : $.util.noop())
+    .pipe(isProduction ? $.rev.manifest() : $.util.noop())
     .pipe(isProduction ? gulp.dest(assets) : $.util.noop())
     .pipe($.size({ title : 'js' }))
     .pipe($.connect.reload());
@@ -53,9 +49,10 @@ gulp.task('styles',function() {
       'include css' : true
     }))
     .pipe($.autoprefixer({browsers: autoprefixerBrowsers}))
-    .pipe(isProduction ? rev() : $.util.noop())
+    .pipe(isProduction ? $.cleanCss() : $.util.noop())
+    .pipe(isProduction ? $.rev() : $.util.noop())
     .pipe(gulp.dest(dist + 'css/'))
-    .pipe(isProduction ? rev.manifest(assets + 'rev-manifest.json', { merge: true, base: assets }) : $.util.noop())
+    .pipe(isProduction ? $.rev.manifest(assets + 'rev-manifest.json', { merge: true, base: assets }) : $.util.noop())
     .pipe(isProduction ? gulp.dest(assets) : $.util.noop())
     .pipe($.size({ title : 'css' }))
     .pipe($.connect.reload());
@@ -71,8 +68,8 @@ gulp.task('images', function() {
 // copy html from app to dist
 gulp.task('html', function() {
   return gulp.src([assets + '**/*.json', app + 'index.html'])
-    .pipe(isProduction ? revCollector() : $.util.noop())
-    .pipe(isProduction ? minifyHtml({
+    .pipe(isProduction ? $.revCollector() : $.util.noop())
+    .pipe(isProduction ? $.minifyHtml({
       empty: true,
       spare: true,
       quotes: true
@@ -107,7 +104,7 @@ gulp.task('clean', function(cb) {
 });
 
 // by default build project and then watch files in order to trigger livereload
-gulp.task('default', gulpSequence('scripts', 'styles', 'images', 'html', 'serve', 'watch'));
+gulp.task('default', $.sequence('scripts', 'styles', 'images', 'html', 'serve', 'watch'));
 
 // waits until clean is finished then builds the project
-gulp.task('build', gulpSequence('clean', 'scripts', 'styles', 'images', 'html'));
+gulp.task('build', $.sequence('clean', 'scripts', 'styles', 'images', 'html'));
