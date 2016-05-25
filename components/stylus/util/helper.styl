@@ -1,0 +1,98 @@
+@import 'util/constant'
+
+/* helper classes */
+
+*
+  box-sizing border-box
+  margin 0
+  padding 0
+
+body
+  color: #333;
+  font-size: 1em;
+  line-height: 1.5;
+  font: $system_font
+  background: $bg_color;
+
+a
+  text-decoration: none;
+
+h1
+  margin 0
+
+.hidden
+  display: none !important
+  visibility: hidden
+
+.clearfix 
+  zoom: 1
+
+.clearfix:before
+.clearfix:after
+  content: ""
+  display: table
+
+.clearfix:after
+  clear: both
+
+.text-center
+  text-align center
+
+.text-too-long
+  text-overflow ellipsis
+  white-space nowrap
+  overflow hidden
+
+.left
+  float left
+
+.container-area
+  position relative
+  margin-bottom 1em
+  background #fbf9fe
+
+.inline-ul
+  position: relative;
+  overflow: hidden;
+  list-style-type none
+
+  &:before
+    content: " ";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 1px;
+    border-top: 1px solid $border_color;
+    transform-origin: 0 0;
+    transform: scaleY(0.5);
+
+  li
+    position: relative;
+    float: left;
+    width: 33.33333333%;
+    box-sizing: border-box;
+
+    &:before
+      content: " ";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 1px;
+      height: 100%;
+      border-right: 1px solid $border_color;
+      -webkit-transform-origin: 100% 0;
+      transform-origin: 100% 0;
+      -webkit-transform: scaleX(0.5);
+      transform: scaleX(0.5);
+
+    &:after
+      content: " ";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      border-bottom: 1px solid $border_color;
+      transform-origin: 0 100%;
+      transform: scaleY(0.5)

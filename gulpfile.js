@@ -65,6 +65,13 @@ gulp.task('images', function() {
     .pipe(gulp.dest(dist + 'images/'));
 });
 
+gulp.task('data', function() {
+  return gulp.src(app + 'data/**/*.*')
+    .pipe(isProduction ? $.minifyHtml() : $.util.noop())
+    .pipe($.size({ title : 'data' }))
+    .pipe(gulp.dest(dist + 'data/'));
+});
+
 // copy html from app to dist
 gulp.task('html', function() {
   return gulp.src([assets + '**/*.json', app + 'index.html'])
@@ -104,7 +111,7 @@ gulp.task('clean', function(cb) {
 });
 
 // by default build project and then watch files in order to trigger livereload
-gulp.task('default', $.sequence('scripts', 'styles', 'images', 'html', 'serve', 'watch'));
+gulp.task('default', $.sequence('scripts', 'styles', 'images', 'data', 'html', 'serve', 'watch'));
 
 // waits until clean is finished then builds the project
-gulp.task('build', $.sequence('clean', 'scripts', 'styles', 'images', 'html'));
+gulp.task('build', $.sequence('clean', 'scripts', 'styles', 'images', 'data', 'html'));

@@ -30,10 +30,13 @@ module.exports.getConfig = function(isProduction, runApp) {
           'NODE_ENV': JSON.stringify('production')
         }
       }),
+      new webpack.optimize.OccurenceOrderPlugin(),
+      new webpack.optimize.DedupePlugin(),
       new webpack.optimize.UglifyJsPlugin({
         compress: { warnings: false },
         output: { comments: false }
-      })
+      }),
+      new webpack.optimize.AggressiveMergingPlugin()
     ];
   } else {
     config.devtool = 'eval';

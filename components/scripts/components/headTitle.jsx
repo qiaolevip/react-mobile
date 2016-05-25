@@ -1,6 +1,9 @@
-import React from 'react';
+import React, {
+  Component,
+  PropTypes,
+} from 'react';
 
-class HeadTitle extends React.Component {
+class HeadTitle extends Component {
 
   render() {
     const props = this.props;
@@ -30,10 +33,10 @@ HeadTitle.defaultProps = {
 };
 
 HeadTitle.propTypes = {
-  title: React.PropTypes.string.isRequired,
-  more: React.PropTypes.string,
-  link: React.PropTypes.string,
-  color: React.PropTypes.string
+  title: PropTypes.string.isRequired,
+  more: PropTypes.string,
+  link: PropTypes.string,
+  color: PropTypes.string
 };
 
 export default HeadTitle;
