@@ -3,7 +3,8 @@ import Grids from '../components/grids.jsx';
 
 export default () => {
   const homeMenu = [
-    {title: '悟空优惠券', url: 'wukong-coupon'}
+    {title: '悟空优惠券', url: 'wukong-coupon'},
+    {title: '页面头部菜单', url: 'page-head-menu'},
   ];
 
   return (
